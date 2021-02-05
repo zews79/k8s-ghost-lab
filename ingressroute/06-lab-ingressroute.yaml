@@ -1,0 +1,39 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: lab-ingress
+  namespace: lab
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    # website URL
+    - match: Host(``)
+      kind: Rule
+      services:
+      - name: lab-svc
+        namespace: lab
+        port: 2368
+  tls:
+    certResolver: leresolver
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: lab-ingress80
+  namespace: lab
+spec:
+  entryPoints:
+    - web
+  routes:
+    # website URL
+    - match: Host(``)
+      kind: Rule
+      services:
+      - name: lab-svc
+        namespace: lab
+        port: 2368
+      middlewares:
+      - name: https-only
+        namespace: traefik

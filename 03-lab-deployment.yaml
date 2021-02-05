@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab
+  namespace: lab
+  labels:
+    app: lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lab
+  template:
+    metadata:
+      labels:
+        app: lab
+    spec:
+      securityContext:
+        runAsUser: 65534 
+        runAsGroup: 65534
+      containers:
+      - name: lab-app
+        image: ghost:3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 2368
+        env:
+        - name: url
+          # website url
+          value:
+        volumeMounts:
+        - mountPath: /var/lib/lab/content
+          name: lab-data
+      volumes:
+      - name: lab-data
+        persistentVolumeClaim:
+          claimName: lab-pvc
+          
